@@ -1,0 +1,57 @@
+digraph ppt {
+
+init_robot -> get_task [label="succeeded"]
+
+get_task -> setup_task [label="task_recieved"]
+get_task -> get_task [label="wrong_task"]
+get_task -> get_task [label="wrong_task_format"]
+
+setup_task -> go_and_pick [label="success"]
+
+go_and_pick -> go_and_pick_substate_machine
+
+go_and_pick_substate_machine -> select_source_subtask
+
+select_source_subtask -> move_to_source_location
+select_source_subtask -> no_more_tasks_for_given_type
+
+move_to_source_location -> prepare_for_perception
+move_to_source_location -> move_to_source_location
+
+prepare_for_perception -> prepare_for_perception_concurrence
+
+prepare_for_perception_concurrence -> adjust_pose_wrt_workspace_at_source
+prepare_for_perception_concurrence -> move_arm_out_of_view_safe
+
+move_arm_out_of_view_safe -> move_arm_out_of_view_safe_substate_machine
+
+move_arm_out_of_view_safe_substate_machine -> add_walls_to_planning_scene
+add_walls_to_planning_scene -> move_arm_out_of_view
+
+move_arm_out_of_view -> prepare_for_perception_concurrence
+adjust_pose_wrt_workspace_at_source -> prepare_for_perception_concurrence
+
+prepare_for_perception_concurrence -> prepare_for_perception
+
+prepare_for_perception -> recognize_objects
+prepare_for_perception -> move_to_source_location
+prepare_for_perception -> prepare_for_perception
+
+recognize_objects -> select_object_to_be_grasped
+recognize_objects -> select_arm_pose_random
+
+select_object_to_be_grasped -> prepare_for_grasphing
+select_object_to_be_grasped -> skip_object_source_pose
+select_object_to_be_grasped -> no_more_free_poses_at_robot_platf
+
+select_arm_pose_random -> look_around
+select_arm_pose_random -> recognize_objects
+
+look_around -> recognize_objects_loop
+look_around -> look_around
+
+recognize_objects_loop -> recognize_objects
+recognize_objects_loop -> skip_source_pose
+
+
+}
